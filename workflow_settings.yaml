@@ -1,0 +1,5 @@
+defaultProject: fit-crow-461418-s0
+defaultLocation: europe-central2
+defaultDataset: luminova_dataset
+defaultAssertionDataset: dataform_assertions
+dataformCoreVersion: 3.0.0
