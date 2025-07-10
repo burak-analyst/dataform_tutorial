@@ -25,3 +25,5 @@ function generateTableDeclarations() {
 
 // Call the function to generate the declarations
 generateTableDeclarations();
+
+

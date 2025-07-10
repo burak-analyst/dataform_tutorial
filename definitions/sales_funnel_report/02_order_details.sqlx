@@ -5,6 +5,8 @@ config {
  description: "Joined order_items with orders and calculated sales KPIs per order line."
  
  }
+
+ -- STEP 1:
  WITH base_items AS (
  SELECT
   id
@@ -18,9 +20,12 @@ config {
   ,delivered_at
   ,returned_at
  FROM ${ref("order_items")}
- WHERE created_at >= '${variables.start_date}'
- ),
- orders_clean AS (
+ WHERE created_at >= '2024-06-01'
+ )
+ 
+
+ -- STEP 2
+ ,orders_clean AS (
  SELECT
   order_id
   ,user_id
@@ -31,16 +36,22 @@ config {
   ,num_of_item
  FROM ${ref("orders")}
  )
+
+
+ -- STEP 3: 
  SELECT
- bi.user_id
- ,bi.order_id
- ,bi.product_id
- ,bi.sale_price
- ,bi.status AS item_status
- ,oc.order_status
- ,bi.created_at AS item_created_at
- ,bi.delivered_at
- ,bi.returned_at
- FROM base_items bi
- LEFT JOIN orders_clean oc
- ON bi.order_id = oc.order_id
+ a.user_id
+ ,a.order_id
+ ,a.product_id
+ ,a.sale_price
+ ,a.status AS item_status
+ ,b.order_status
+ ,a.created_at AS item_created_at
+ ,a.delivered_at
+ ,a.returned_at
+ FROM base_items AS a
+ LEFT JOIN orders_clean AS b 
+ ON a.order_id = b.order_id
+
+
+
