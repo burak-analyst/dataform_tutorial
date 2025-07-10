@@ -4,32 +4,31 @@ config {
  tags: ["sales_funnel_report"],
  description: "User profile enrichment with segmentation based on age, gender, and acquisition channel."
  }
+
  
- -- What this model does:
- -- • Filters users based on account creation date
- -- • Segments users by age band and gender
- -- • Outputs one row per user for joining to events or orders later
- 
+ -- STEP 1 
  WITH users_filtered AS (
  SELECT
- id AS user_id
- ,gender
- ,age
- ,traffic_source
- ,created_at
+    id AS user_id
+    ,gender
+    ,age
+    ,traffic_source
+    ,created_at
  FROM ${ref("users")}
- WHERE created_at >= '${variables.start_date}'
+ WHERE created_at >= '2024-06-01'
  )
+
+-- STEP 2
  SELECT
- user_id
- ,gender
- ,traffic_source
- ,SAFE_CAST(AGE AS INT64) AS age
- ,CASE
- WHEN age BETWEEN 18 AND 25 THEN '18–25'
- WHEN age BETWEEN 26 AND 35 THEN '26–35'
- WHEN age BETWEEN 36 AND 50 THEN '36–50'
- WHEN age > 50 THEN '50+'
- ELSE 'unknown'
- END AS age_band
+    user_id
+    ,gender
+    ,traffic_source
+    ,SAFE_CAST(AGE AS INT64) AS age
+    ,CASE
+        WHEN age BETWEEN 18 AND 25 THEN '18–25'
+        WHEN age BETWEEN 26 AND 35 THEN '26–35'
+        WHEN age BETWEEN 36 AND 50 THEN '36–50'
+        WHEN age > 50 THEN '50+'
+        ELSE 'unknown'
+    END AS age_band
  FROM users_filtered
