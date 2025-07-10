@@ -9,7 +9,6 @@ config {
   }
 }
 
-
  SELECT
     a.user_id
     ,a.session_id
