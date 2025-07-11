@@ -27,8 +27,8 @@ config {
     ,b.item_status
     ,b.order_status
     ,b.returned_at IS NOT NULL AS is_returned
-    ,CASE WHEN ub.event_type = 'add_to_cart' THEN 1 ELSE 0 END AS added_to_cart
-    ,CASE WHEN ub.event_type = 'purchase' THEN 1 ELSE 0 END AS purchased
+    ,CASE WHEN a.event_type = 'add_to_cart' THEN 1 ELSE 0 END AS added_to_cart
+    ,CASE WHEN a.event_type = 'purchase' THEN 1 ELSE 0 END AS purchased
 
  FROM ${ref("user_behavior")} a
  LEFT JOIN ${ref("order_details")} b ON a.user_id = b.user_id
