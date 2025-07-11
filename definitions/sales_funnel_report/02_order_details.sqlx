@@ -2,8 +2,10 @@ config {
  type: "view",
  name: "order_details",
  tags: ["sales_funnel_report"],
- description: "Joined order_items with orders and calculated sales KPIs per order line."
- 
+ description: "Joined order_items with orders and calculated sales KPIs per order line.",
+ assertions: {
+    uniqueKeys: [["order_id", "product_id"]]
+  }
  }
 
  -- STEP 1:
@@ -20,7 +22,7 @@ config {
   ,delivered_at
   ,returned_at
  FROM ${ref("order_items")}
- WHERE created_at >= '2024-06-01'
+ WHERE created_at >= '${variables.start_date}'
  )
  
 

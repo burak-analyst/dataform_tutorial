@@ -2,7 +2,10 @@ config {
  type: "view",
  name: "user_behavior",
  tags: ["sales_funnel_report"],
- description: "Captured user sessions and event types across traffic sources."
+ description: "Captured user sessions and event types across traffic sources.",
+ assertions: {
+    nonNull: ["user_id"]
+  }
  }
  
  -- Filters down the events table to key steps in the funnel
