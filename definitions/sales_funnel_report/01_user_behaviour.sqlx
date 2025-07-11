@@ -1,0 +1,28 @@
+config {
+ type: "view",
+ name: "user_behavior",
+ tags: ["sales_funnel_report"],
+ description: "Captured user sessions and event types across traffic sources.",
+ assertions: {
+    nonNull: ["user_id"]
+  }
+ }
+ 
+ -- Filters down the events table to key steps in the funnel
+ -- Prepares clean event-level data per user/session
+ -- Ready to be aggregated or joined with orders later
+
+ SELECT
+ user_id
+ ,session_id
+ ,traffic_source
+ ,browser
+ ,event_type
+ ,SAFE_CAST(created_at AS DATE) AS event_date
+ FROM ${ref("events")}
+ WHERE event_type IN ('page_view', 'add_to_cart', 'purchase')
+ AND user_id IS NOT NULL
+
+
+
+

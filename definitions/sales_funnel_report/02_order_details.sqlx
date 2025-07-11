@@ -1,0 +1,59 @@
+config {
+ type: "view",
+ name: "order_details",
+ tags: ["sales_funnel_report"],
+ description: "Joined order_items with orders and calculated sales KPIs per order line.",
+ assertions: {
+    uniqueKeys: [["order_id", "product_id"]]
+  }
+ }
+
+ -- STEP 1:
+ WITH base_items AS (
+ SELECT
+  id
+  ,order_id
+  ,user_id
+  ,product_id
+  ,sale_price
+  ,status
+  ,created_at
+  ,shipped_at
+  ,delivered_at
+  ,returned_at
+ FROM ${ref("order_items")}
+ WHERE created_at >= '${variables.start_date}'
+ )
+ 
+
+ -- STEP 2
+ ,orders_clean AS (
+ SELECT
+  order_id
+  ,user_id
+  ,status AS order_status
+  ,created_at AS order_created_at
+  ,delivered_at
+  ,returned_at
+  ,num_of_item
+ FROM ${ref("orders")}
+ )
+
+
+ -- STEP 3: 
+ SELECT
+ a.user_id
+ ,a.order_id
+ ,a.product_id
+ ,a.sale_price
+ ,a.status AS item_status
+ ,b.order_status
+ ,a.created_at AS item_created_at
+ ,a.delivered_at
+ ,a.returned_at
+ FROM base_items AS a
+ LEFT JOIN orders_clean AS b 
+ ON a.order_id = b.order_id
+
+
+
