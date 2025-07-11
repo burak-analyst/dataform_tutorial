@@ -1,0 +1,22 @@
+config {
+ type: "view",
+ name: "product_dim",
+ tags: ["sales_funnel_report"],
+ description: "Product-level attributes with inventory and distribution enrichment."
+ }
+ 
+SELECT
+    a.id AS product_id
+    ,a.name AS product_name
+    ,a.category AS product_category
+    ,a.brand AS product_brand
+    ,a.department AS product_department
+    ,a.retail_price
+    ,a.cost
+    ,a.distribution_center_id
+    ,b.name AS distribution_center_name
+    ,b.latitude
+    ,b.longitude
+ FROM ${ref("products")} a
+ LEFT JOIN ${ref("distribution_centers")} b
+ ON a.distribution_center_id = b.id

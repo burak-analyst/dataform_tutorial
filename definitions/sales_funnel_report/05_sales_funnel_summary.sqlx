@@ -1,0 +1,38 @@
+config {
+  type: "table",
+  name: "sales_funnel_summary",
+  tags: ["sales_funnel_report"],
+  description: "Final report for funnel analysis.",
+  bigquery: {
+    partitionBy: "event_date",
+    clusterBy: ["user_id", "product_id"]
+  }
+}
+
+ SELECT
+    a.user_id
+    ,a.session_id
+    ,a.event_date
+    ,a.traffic_source
+    ,a.browser
+    ,d.age_band
+    ,d.gender
+    ,c.product_id
+    ,c.product_name
+    ,c.product_category
+    ,c.product_brand
+    ,c.product_department
+    ,c.retail_price
+    ,b.sale_price
+    ,b.item_status
+    ,b.order_status
+    ,b.returned_at IS NOT NULL AS is_returned
+    ,CASE WHEN a.event_type = 'add_to_cart' THEN 1 ELSE 0 END AS added_to_cart
+    ,CASE WHEN a.event_type = 'purchase' THEN 1 ELSE 0 END AS purchased
+
+ FROM ${ref("user_behavior")} a
+ LEFT JOIN ${ref("order_details")} b ON a.user_id = b.user_id
+ LEFT JOIN ${ref("product_dim")} c ON b.product_id = c.product_id
+ LEFT JOIN ${ref("user_segments")} d ON a.user_id = d.user_id
+
+
